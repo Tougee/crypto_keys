@@ -20,6 +20,14 @@ abstract class _AsymmetricOperator<T extends Key> implements Operator<T> {
       createCurveParameters((key as EcKey).curve);
 
   pc.AsymmetricKeyParameter get keyParameter {
+    if (key is EdDSAPrivateKey) {
+      var k = ed.PrivateKey((key as EdDSAPrivateKey).bytes);
+      return pc.PrivateKeyParameter<pc.EdDSAPrivateKey>(pc.EdDSAPrivateKey(k));
+    }
+    if (key is EdDSAPublicKey) {
+      var k = ed.PublicKey((key as EdDSAPublicKey).bytes);
+      return pc.PublicKeyParameter<pc.EdDSAPublicKey>(pc.EdDSAPublicKey(k));
+    }
     if (key is RsaPrivateKey) {
       var k = key as RsaPrivateKey;
       return pc.PrivateKeyParameter<pc.RSAPrivateKey>(pc.RSAPrivateKey(
@@ -68,6 +76,11 @@ class _AsymmetricSigner extends Signer<PrivateKey>
     _algorithm.init(
         true, pc.ParametersWithRandom(keyParameter, DefaultSecureRandom()));
 
+    if (key is EdDSAKey) {
+      return Signature(
+          (_algorithm.generateSignature(data) as pc.EdDSASignature).bytes);
+    }
+
     if (key is RsaKey) {
       return Signature(
           (_algorithm.generateSignature(data) as pc.RSASignature).bytes);
@@ -103,6 +116,10 @@ class _AsymmetricVerifier extends Verifier<PublicKey>
 
   @override
   bool verify(Uint8List data, Signature signature) {
+    if (key is EdDSAKey) {
+      _algorithm.init(false, pc.ParametersWithRandom(keyParameter, null));
+      return _algorithm.verifySignature(data, pc.EdDSASignature(signature.data));
+    }
     if (key is RsaKey) {
       _algorithm.init(false,
           pc.ParametersWithRandom(keyParameter, pc.SecureRandom('Fortuna')));

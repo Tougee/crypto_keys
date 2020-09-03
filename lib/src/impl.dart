@@ -5,6 +5,46 @@ import 'algorithms.dart';
 import 'package:collection/collection.dart';
 import 'package:quiver/core.dart';
 
+class EdDSAPublicKeyImpl extends PublicKey
+  with Key
+  implements
+      EdDSAPublicKey,
+      EdDSAKey {
+  @override
+  final List<int> bytes;
+
+  EdDSAPublicKeyImpl({required this.bytes});
+
+  @override
+  int get hashCode => const ListEquality().hash(bytes);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          (other is EdDSAPublicKey &&
+              const ListEquality().equals(other.bytes, bytes));
+}
+
+class EdDSAPrivateKeyImpl extends PrivateKey
+    with Key
+    implements
+        EdDSAPrivateKey,
+        EdDSAKey {
+  @override
+  final List<int> bytes;
+
+  EdDSAPrivateKeyImpl({required this.bytes});
+
+  @override
+  int get hashCode => const ListEquality().hash(bytes);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          (other is EdDSAPrivateKey &&
+              const ListEquality().equals(other.bytes, bytes));
+}
+
 class RsaPublicKeyImpl extends PublicKey
     with Key
     implements RsaPublicKey, RsaKey {
