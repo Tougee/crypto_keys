@@ -156,15 +156,16 @@ class KeyPair {
         var publicKey;
         if (jwk.containsKey('x')) {
           x = jwk['x'];
-          publicKey = EdDSAPublicKey(bytes: List<int>.from(x));
+          publicKey = EdDSAPublicKey(bytes: _base64ToBytes(x));
         } else {
           publicKey = null;
         }
         var privateKey;
         if (jwk.containsKey('d')) {
           var d = jwk['d'];
-          var privateKeyBytes = List<int>.from(d);
-          privateKeyBytes.addAll(List<int>.from(x));
+          var privateKeyBytes = <int>[];
+          privateKeyBytes.addAll(_base64ToBytes(d));
+          privateKeyBytes.addAll(_base64ToBytes(x));
           privateKey = EdDSAPrivateKey(bytes: privateKeyBytes);
         } else {
           privateKey = null;

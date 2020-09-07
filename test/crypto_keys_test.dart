@@ -1108,6 +1108,25 @@ void main() {
         }
       });
     });
+
+    test('Signing with EdDSA key', () {
+      var jwk = {
+        'kty': 'OKP',
+        'crv': 'Ed25519',
+        'd': 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
+        'x': '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo'
+      };
+
+      var keyPair = KeyPair.fromJwk(jwk);
+
+      var data = Uint8List.fromList(utf8.encode(''));
+      
+      var signature = Uint8List.fromList([
+        229, 86, 67, 0, 195, 96, 172, 114, 144, 134, 226, 204, 128, 110, 130, 138, 132, 135, 127, 30, 184, 229, 217, 116, 216, 115, 224, 101, 34, 73, 1, 85, 95, 184, 130, 21, 144, 163, 59, 172, 198, 30, 57, 112, 28, 249, 180, 107, 210, 91, 245, 240, 89, 91, 190, 36, 101, 81, 65, 67, 142, 122, 16, 11
+      ]);
+
+      _testSigning(keyPair, algorithms.signing.eddsa.ed255519, data, signature, true);
+    });
   });
 
   group('Encryption', () {
