@@ -7,10 +7,15 @@ environment:
   sdk: '>=2.12.0-0 <3.0.0'
 
 dependencies:
-  pointycastle: ^3.0.0-nullsafety.2
+  pointycastle:
+      git:
+          url: git@github.com:Tougee/pc-dart.git
+          ref: feature/eddsa
+
   meta: ^1.3.0
   collection: ^1.14.13
   quiver: ^3.0.0-nullsafety.3
+  ed25519_edwards: ^0.1.0-nullsafety.1
 
 dev_dependencies:
   test: ^1.16.2

@@ -170,6 +170,8 @@ class _SigAlgorithms extends Identifier {
   /// Contains the identifiers for supported ECDSA signing algorithms
   final ecdsa = _EcdsaSigAlgorithms();
 
+  final eddsa = _EdDSASigAlgorithms();
+
   _SigAlgorithms() : super._('sig');
 }
 
@@ -236,6 +238,13 @@ class _EcdsaSigAlgorithms extends Identifier {
       'sig/ECDSA/SHA-512', () => pc.ECDSASigner(pc.SHA512Digest(), null));
 
   _EcdsaSigAlgorithms() : super._('sig/ECDSA');
+}
+
+class _EdDSASigAlgorithms extends Identifier {
+  final ed255519 = AlgorithmIdentifier._(
+      'sig/EDDSA/ED25519', () => pc.EdDSASigner());
+
+  _EdDSASigAlgorithms(): super._('sig/EDDSA');
 }
 
 /// Contains the identifiers for supported cryptographic curves
@@ -311,6 +320,8 @@ class AlgorithmIdentifier<T extends pc.Algorithm> extends Identifier {
 
     /// RSASSA-PSS using SHA-512 and MGF1 with SHA-512
     'PS512': null,
+
+    'EdDSA': algorithms.signing.eddsa.ed255519,
 
     /// No digital signature or MAC
     'none': null,

@@ -54,6 +54,14 @@ class KeyPair {
   factory KeyPair.generateSymmetric(int bitLength) =>
       KeyPair.symmetric(SymmetricKey.generate(bitLength));
 
+  factory KeyPair.generateEdDSA() {
+    var pair = ed.generateKey();
+    return KeyPair(
+        publicKey: EdDSAPublicKey(bytes: pair.publicKey!.bytes),
+        privateKey: EdDSAPrivateKey(bytes: pair.privateKey!.bytes)
+    );
+  }
+
   factory KeyPair.generateRsa({BigInt? exponent, int bitStrength = 2048}) {
     exponent ??= BigInt.from(65537);
 
@@ -143,6 +151,29 @@ class KeyPair {
                     yCoordinate: _base64ToInt(jwk['y']),
                     curve: _parseCurve(jwk['crv']))
                 : null);
+      case 'OKP':
+        var x;
+        var publicKey;
+        if (jwk.containsKey('x')) {
+          x = jwk['x'];
+          publicKey = EdDSAPublicKey(bytes: _base64ToBytes(x));
+        } else {
+          publicKey = null;
+        }
+        var privateKey;
+        if (jwk.containsKey('d')) {
+          var d = jwk['d'];
+          var privateKeyBytes = <int>[];
+          privateKeyBytes.addAll(_base64ToBytes(d));
+          privateKeyBytes.addAll(_base64ToBytes(x));
+          privateKey = EdDSAPrivateKey(bytes: privateKeyBytes);
+        } else {
+          privateKey = null;
+        }
+        return KeyPair(
+          privateKey: privateKey,
+          publicKey: publicKey
+        );
     }
     throw ArgumentError('Unknown key type ${jwk['kty']}');
   }
