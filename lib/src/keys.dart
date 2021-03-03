@@ -57,8 +57,8 @@ class KeyPair {
   factory KeyPair.generateEdDSA() {
     var pair = ed.generateKey();
     return KeyPair(
-        publicKey: EdDSAPublicKey(bytes: pair.publicKey.bytes),
-        privateKey: EdDSAPrivateKey(bytes: pair.privateKey.bytes)
+        publicKey: EdDSAPublicKey(bytes: pair.publicKey!.bytes),
+        privateKey: EdDSAPrivateKey(bytes: pair.privateKey!.bytes)
     );
   }
 

@@ -117,7 +117,7 @@ class _AsymmetricVerifier extends Verifier<PublicKey>
   @override
   bool verify(Uint8List data, Signature signature) {
     if (key is EdDSAKey) {
-      _algorithm.init(false, pc.ParametersWithRandom(keyParameter, null));
+      _algorithm.init(false, pc.ParametersWithRandom(keyParameter, pc.SecureRandom('Fortuna')));
       return _algorithm.verifySignature(data, pc.EdDSASignature(signature.data));
     }
     if (key is RsaKey) {
